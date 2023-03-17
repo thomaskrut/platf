@@ -142,7 +142,7 @@ function updateCanvas() {
         }
     }
     ctx.fillStyle = 'dimgray';
-    //ctx.fillRect(player.gridX * ELEMENT_SIZE, player.gridY * ELEMENT_SIZE, 10, 10);
+    // ctx.fillRect(player.gridX * ELEMENT_SIZE, player.gridY * ELEMENT_SIZE, 10, 10);
     player.move();
     player.draw();
     
