@@ -32,13 +32,12 @@ function initGrid() {
     grid[16][11] = 'X';
     grid[17][11] = 'X';
     grid[18][11] = 'X';
-    grid[19][12] = 'X';
-    grid[19][13] = 'X';
-    grid[19][14] = 'X';
-    grid[19][15] = 'X';
-    grid[19][16] = 'X';
-    grid[19][17] = 'X';
-    grid[19][18] = 'X';
+    grid[4][7] = 'X';
+    grid[5][7] = 'X';
+    grid[6][7] = 'X';
+    grid[7][7] = 'X';
+    grid[8][7] = 'X';
+
 
     return grid;
 }
@@ -57,15 +56,15 @@ const player = {
     maxJump: 15,
     acc(dir) {
         switch (dir) {
-            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.4).round(2); break;
-            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.4).round(2); break;
-            case 'down': this.vy += 0.2; break;
+            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
+            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.2).round(2); break;
+            case 'down': this.vy += 0.25; break;
         }
     },
 
-    dec(dir) {
+    dec() {
         if (this.vx > 0) this.vx = (this.vx - 0.4).round(2);
-        if (this.vx < 0) this.vx = (this.vx + 0.4).round(2);
+        else if (this.vx < 0) this.vx = (this.vx + 0.4).round(2);
     },
 
     draw() {
@@ -74,7 +73,7 @@ const player = {
     },
 
     move() {
-
+        console.log(this.vx);
         this.gridX = Math.round((this.x + 3) / ELEMENT_SIZE);
         this.gridY = Math.round((this.y + 3) / ELEMENT_SIZE);
         this.acc('down');
@@ -93,7 +92,7 @@ const player = {
         }
 
         if (this.jumping) {
-            this.vy = -2.5;
+            this.vy = -2.8;
             this.jump++;
         }
 
@@ -127,8 +126,11 @@ function updateCanvas() {
             if (grid[x][y] != ' ') ctx.fillRect(x * ELEMENT_SIZE - 7, y * ELEMENT_SIZE - 7, ELEMENT_SIZE + 5, ELEMENT_SIZE);
         }
     }
+    ctx.fillStyle = 'dimgray';
+    ctx.fillRect(player.gridX * ELEMENT_SIZE, player.gridY * ELEMENT_SIZE, 10, 10);
     player.move();
     player.draw();
+    
     raf = window.requestAnimationFrame(updateCanvas);
 }
 
