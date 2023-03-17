@@ -14,9 +14,9 @@ const keysPressed = {
     ' ': false
 }
 
-Number.prototype.round = function(places) {
-    return +(Math.round(this + "e+" + places)  + "e-" + places);
-  }
+Number.prototype.round = function (places) {
+    return +(Math.round(this + "e+" + places) + "e-" + places);
+}
 
 function initGrid() {
     const grid = [];
@@ -32,7 +32,13 @@ function initGrid() {
     grid[16][11] = 'X';
     grid[17][11] = 'X';
     grid[18][11] = 'X';
-    grid[19][11] = 'X';
+    grid[19][12] = 'X';
+    grid[19][13] = 'X';
+    grid[19][14] = 'X';
+    grid[19][15] = 'X';
+    grid[19][16] = 'X';
+    grid[19][17] = 'X';
+    grid[19][18] = 'X';
 
     return grid;
 }
@@ -45,20 +51,21 @@ const player = {
     vx: 0,
     vy: 0,
     jumping: false,
+    readyToJump: true,
     maxSpeed: 3,
     jump: 0,
-    maxJump: 2,
+    maxJump: 15,
     acc(dir) {
         switch (dir) {
-            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.3).round(2); break;
-            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.3).round(2); break;
+            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.4).round(2); break;
+            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.4).round(2); break;
             case 'down': this.vy += 0.2; break;
         }
     },
 
     dec(dir) {
-        if (this.vx > 0) this.vx = (this.vx - 0.3).round(2);
-        if (this.vx < 0) this.vx = (this.vx + 0.3).round(2);
+        if (this.vx > 0) this.vx = (this.vx - 0.4).round(2);
+        if (this.vx < 0) this.vx = (this.vx + 0.4).round(2);
     },
 
     draw() {
@@ -67,17 +74,24 @@ const player = {
     },
 
     move() {
-      
+
         this.gridX = Math.round((this.x + 3) / ELEMENT_SIZE);
         this.gridY = Math.round((this.y + 3) / ELEMENT_SIZE);
         this.acc('down');
-        this.jumping = keysPressed[' '];
+        this.jumping = (keysPressed[' '] && this.jump < this.maxJump && this.readyToJump);
+        if (!keysPressed[' ']) this.readyToJump = false;
 
-        if (grid[this.gridX][this.gridY + 1] != ' ') {
+        if (this.vy >= 0 && grid[this.gridX][this.gridY + 1] != ' ') {
             this.vy = 0;
-            this.y = (this.gridY * ELEMENT_SIZE) - 7;
+            this.jump = 0;
+            this.readyToJump = true;
         }
-      
+
+        if (grid[this.gridX][this.gridY] != ' ') {
+            this.jump = this.maxJump;
+            this.vy = 0.4;
+        }
+
         if (this.jumping) {
             this.vy = -2.5;
             this.jump++;
@@ -87,7 +101,12 @@ const player = {
         else if (keysPressed.ArrowRight) this.acc('right')
         else this.dec();
 
+        if (this.vx < 0 && grid[this.gridX - 1][this.gridY] != ' ') this.vx = 0;
+        if (this.vx > 0 && grid[this.gridX + 1][this.gridY] != ' ') this.vx = 0;
+
         this.x += this.vx;
+      
+
         this.y += this.vy;
     }
 }
@@ -97,7 +116,7 @@ function updateCanvas() {
     for (let x = 0; x < WIDTH / ELEMENT_SIZE; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            ctx.fillText(grid[x][y], x * ELEMENT_SIZE, y * ELEMENT_SIZE);
+            if (grid[x][y] != ' ') ctx.fillRect(x * ELEMENT_SIZE - 7, y * ELEMENT_SIZE - 7, ELEMENT_SIZE, ELEMENT_SIZE);
         }
     }
     player.move();
