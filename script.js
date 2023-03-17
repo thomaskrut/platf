@@ -22,7 +22,7 @@ Number.prototype.round = function (places) {
 
 function initGrid() {
     const grid = [];
-    for (let x = 0; x < 2000; x++) {
+    for (let x = -2; x < 2000; x++) {
         grid[x] = [];
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
             grid[x][y] = ' ';
@@ -71,8 +71,8 @@ const player = {
     maxJump: 15,
     acc(dir) {
         switch (dir) {
-            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
-            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.2).round(2); break;
+            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.1).round(2); break;
+            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.1).round(2); break;
             case 'down': this.vy += 0.25; break;
         }
     },
@@ -95,10 +95,11 @@ const player = {
             drawFromX = this.gridX - (WIDTH / ELEMENT_SIZE / 2);
             offsetX = this.x / ELEMENT_SIZE - Math.round((this.x / ELEMENT_SIZE));
         }
-        if (this.gridX <= WIDTH / ELEMENT_SIZE / 2) {
+        if (this.gridX < WIDTH / ELEMENT_SIZE / 2) {
             drawFromX = 0;
             offsetX = 0;
         }
+        
         
         this.acc('down');
         this.jumping = (keysPressed[' '] && this.jump < this.maxJump && this.readyToJump);
@@ -112,7 +113,7 @@ const player = {
 
         if (grid[this.gridX][this.gridY] != ' ') {
             this.jump = this.maxJump;
-            this.vy = 0.4;
+            
         }
 
         if (this.jumping) {
@@ -124,23 +125,20 @@ const player = {
         else if (keysPressed.ArrowRight) this.acc('right')
         else this.dec();
 
-        
-
-      
         this.x += this.vx;
 
         this.y += this.vy;
-        if (this.vy == 0) this.y = this.gridY * ELEMENT_SIZE;
+        if (this.vy == 0 && this.readyToJump) this.y = this.gridY * ELEMENT_SIZE;
         
     }
 }
 
 function updateCanvas() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    for (let x = 0; x < grid.length; x++) {
+    for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 2; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - offsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE - 2, ELEMENT_SIZE - 2);
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - offsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE, ELEMENT_SIZE  );
         }
     }
     ctx.fillStyle = 'dimgray';
