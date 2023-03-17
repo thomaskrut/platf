@@ -101,13 +101,21 @@ const player = {
         else if (keysPressed.ArrowRight) this.acc('right')
         else this.dec();
 
-        if (this.vx < 0 && grid[this.gridX - 1][this.gridY] != ' ') this.vx = 0;
-        if (this.vx > 0 && grid[this.gridX + 1][this.gridY] != ' ') this.vx = 0;
+        if (this.vx < 0 && grid[this.gridX - 1][this.gridY] != ' ') {
+            this.x = (this.gridX * ELEMENT_SIZE) - 2;
+            this.vx = 0;
+        }
+
+        if (this.vx > 0 && grid[this.gridX + 1][this.gridY] != ' ') {
+            this.x = (this.gridX * ELEMENT_SIZE) - 7;
+            this.vx = 0;
+        }
 
         this.x += this.vx;
-      
 
         this.y += this.vy;
+        if (this.vy == 0) this.y = (this.gridY * ELEMENT_SIZE) - 7;
+        
     }
 }
 
@@ -116,7 +124,7 @@ function updateCanvas() {
     for (let x = 0; x < WIDTH / ELEMENT_SIZE; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect(x * ELEMENT_SIZE - 7, y * ELEMENT_SIZE - 7, ELEMENT_SIZE, ELEMENT_SIZE);
+            if (grid[x][y] != ' ') ctx.fillRect(x * ELEMENT_SIZE - 7, y * ELEMENT_SIZE - 7, ELEMENT_SIZE + 5, ELEMENT_SIZE);
         }
     }
     player.move();
