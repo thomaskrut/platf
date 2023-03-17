@@ -14,6 +14,10 @@ const keysPressed = {
     ' ': false
 }
 
+Number.prototype.round = function(places) {
+    return +(Math.round(this + "e+" + places)  + "e-" + places);
+  }
+
 function initGrid() {
     const grid = [];
     for (let x = 0; x < WIDTH / ELEMENT_SIZE; x++) {
@@ -46,15 +50,15 @@ const player = {
     maxJump: 2,
     acc(dir) {
         switch (dir) {
-            case 'right': if (this.vx < this.maxSpeed) this.vx += 0.1; break;
-            case 'left': if (this.vx > -this.maxSpeed) this.vx -= 0.1; break;
-            case 'down': this.vy += 0.1; break;
+            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.3).round(2); break;
+            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.3).round(2); break;
+            case 'down': this.vy += 0.2; break;
         }
     },
 
     dec(dir) {
-        if (this.vx > 0) this.vx -= 0.1
-        if (this.vx < 0) this.vx += 0.1
+        if (this.vx > 0) this.vx = (this.vx - 0.3).round(2);
+        if (this.vx < 0) this.vx = (this.vx + 0.3).round(2);
     },
 
     draw() {
@@ -63,14 +67,19 @@ const player = {
     },
 
     move() {
-        console.log(this.vx);
+      
         this.gridX = Math.round((this.x + 3) / ELEMENT_SIZE);
         this.gridY = Math.round((this.y + 3) / ELEMENT_SIZE);
         this.acc('down');
         this.jumping = keysPressed[' '];
-        if (grid[this.gridX][this.gridY + 1] != ' ') this.vy = 0;
+
+        if (grid[this.gridX][this.gridY + 1] != ' ') {
+            this.vy = 0;
+            this.y = (this.gridY * ELEMENT_SIZE) - 7;
+        }
+      
         if (this.jumping) {
-            this.vy = -1.5;
+            this.vy = -2.5;
             this.jump++;
         }
 
