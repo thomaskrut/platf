@@ -23,7 +23,7 @@ Number.prototype.round = function (places) {
 
 function initGrid() {
     const grid = [];
-    for (let x = -2; x < GRID_LENGTH + 10; x++) {
+    for (let x = -2; x < GRID_LENGTH + 1; x++) {
         grid[x] = [];
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
             grid[x][y] = ' ';
@@ -129,7 +129,8 @@ const player = {
 
         if (grid[this.gridX][this.gridY] != ' ') {
             this.jump = this.maxJump;
-            
+            this.jumping = false;
+            this.vy = 0.5;
         }
 
         if (this.jumping) {
