@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 const ELEMENT_SIZE = 10;
+const GRID_LENGTH = 100;
 
 const grid = initGrid();
 let raf = window.requestAnimationFrame(updateCanvas);
@@ -22,7 +23,7 @@ Number.prototype.round = function (places) {
 
 function initGrid() {
     const grid = [];
-    for (let x = -2; x < 2000; x++) {
+    for (let x = -2; x < GRID_LENGTH + 10; x++) {
         grid[x] = [];
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
             grid[x][y] = ' ';
@@ -53,6 +54,17 @@ function initGrid() {
     grid[35][13] = 'X';
     grid[36][13] = 'X';
 
+    
+    grid[61][13] = 'X';
+    grid[62][13] = 'X';
+    grid[64][13] = 'X';
+    grid[65][13] = 'X';
+    grid[66][13] = 'X';
+    grid[95][13] = 'X';
+    grid[96][13] = 'X';
+    grid[97][13] = 'X';
+    grid[98][13] = 'X';
+    grid[99][13] = 'X';
 
     return grid;
 }
@@ -99,7 +111,11 @@ const player = {
             drawFromX = 0;
             pixelOffsetX = 0;
         }
-        
+        if (this.x > GRID_LENGTH * ELEMENT_SIZE - WIDTH / 2) {
+            drawFromX = GRID_LENGTH - (WIDTH / ELEMENT_SIZE);
+            pixelOffsetX = 0;
+        }
+    
         
         this.acc('down');
         this.jumping = (keysPressed[' '] && this.jump < this.maxJump && this.readyToJump);
@@ -137,7 +153,7 @@ function updateCanvas() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     ctx.fillStyle = 'dimgray';
-    for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 2; x++) {
+    for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
             if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
