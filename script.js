@@ -91,11 +91,11 @@ const player = {
         
         this.gridX = Math.round((this.x / ELEMENT_SIZE));
         this.gridY = Math.round((this.y / ELEMENT_SIZE));
-        if (this.gridX > WIDTH / ELEMENT_SIZE / 2) {
+        if (this.x > WIDTH / 2) {
             drawFromX = this.gridX - (WIDTH / ELEMENT_SIZE / 2);
             offsetX = this.x / ELEMENT_SIZE - Math.round((this.x / ELEMENT_SIZE));
         }
-        if (this.gridX < WIDTH / ELEMENT_SIZE / 2) {
+        if (this.x < WIDTH / 2) {
             drawFromX = 0;
             offsetX = 0;
         }
