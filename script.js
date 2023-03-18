@@ -8,7 +8,7 @@ const grid = initGrid();
 let raf = window.requestAnimationFrame(updateCanvas);
 
 let drawFromX = 0;
-let offsetX = 0;
+let pixelOffsetX = 0;
 
 const keysPressed = {
     ArrowLeft: false,
@@ -84,7 +84,7 @@ const player = {
 
     draw() {
         ctx.fillStyle = "red";
-        ctx.fillRect(this.x - ((drawFromX + offsetX) * ELEMENT_SIZE), this.y, ELEMENT_SIZE, ELEMENT_SIZE);
+        ctx.fillRect(this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE), this.y, ELEMENT_SIZE, ELEMENT_SIZE);
     },
 
     move() {
@@ -93,11 +93,11 @@ const player = {
         this.gridY = Math.round((this.y / ELEMENT_SIZE));
         if (this.x > WIDTH / 2) {
             drawFromX = this.gridX - (WIDTH / ELEMENT_SIZE / 2);
-            offsetX = this.x / ELEMENT_SIZE - Math.round((this.x / ELEMENT_SIZE));
+            pixelOffsetX = this.x / ELEMENT_SIZE - Math.round((this.x / ELEMENT_SIZE));
         }
         if (this.x < WIDTH / 2) {
             drawFromX = 0;
-            offsetX = 0;
+            pixelOffsetX = 0;
         }
         
         
@@ -140,7 +140,7 @@ function updateCanvas() {
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 2; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - offsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
         }
     }
     
