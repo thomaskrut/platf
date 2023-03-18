@@ -73,7 +73,7 @@ const player = {
         switch (dir) {
             case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
             case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.2).round(2); break;
-            case 'down': this.vy += 0.25; break;
+            case 'down': this.vy += 0.3; break;
         }
     },
 
@@ -134,14 +134,16 @@ const player = {
 }
 
 function updateCanvas() {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = 'dimgray';
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 2; x++) {
 
         for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - offsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE, ELEMENT_SIZE  );
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - offsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
         }
     }
-    ctx.fillStyle = 'dimgray';
+    
     // ctx.fillRect(player.gridX * ELEMENT_SIZE, player.gridY * ELEMENT_SIZE, 10, 10);
     player.move();
     player.draw();

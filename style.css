@@ -1,9 +1,10 @@
 body {
-    background-color: black;
+    background-color:cadetblue;
 }
 
 #canvas {
-    width: 600px;
-    height: 400px;
+    width: 480px;
+    height: 280px;
+    image-rendering: crisp-edges;
    
 }
