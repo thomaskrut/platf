@@ -71,8 +71,8 @@ const player = {
     maxJump: 15,
     acc(dir) {
         switch (dir) {
-            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.1).round(2); break;
-            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.1).round(2); break;
+            case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
+            case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.2).round(2); break;
             case 'down': this.vy += 0.25; break;
         }
     },
