@@ -4,12 +4,15 @@ const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 const ELEMENT_SIZE = 10;
 const GRID_LENGTH = 100;
+const GRID_HEIGHT = 50;
 
 const grid = initGrid();
 let raf = window.requestAnimationFrame(updateCanvas);
 
 let drawFromX = 0;
 let pixelOffsetX = 0;
+let drawFromY = 0;
+let pixelOffsetY = 0;
 
 const keysPressed = {
     ArrowLeft: false,
@@ -25,7 +28,7 @@ function initGrid() {
     const grid = [];
     for (let x = -2; x < GRID_LENGTH + 1; x++) {
         grid[x] = [];
-        for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
+        for (let y = 0; y < GRID_HEIGHT; y++) {
             grid[x][y] = ' ';
         }
     }
@@ -40,6 +43,27 @@ function initGrid() {
     grid[6][7] = 'X';
     grid[7][7] = 'X';
     grid[8][7] = 'X';
+
+    grid[10][14] = 'X';
+
+    grid[10][20] = 'X';
+    grid[11][20] = 'X';
+    grid[12][20] = 'X';
+    grid[13][20] = 'X';
+    grid[14][20] = 'X';
+
+
+    grid[20][25] = 'X';
+    grid[21][25] = 'X';
+    grid[22][25] = 'X';
+    grid[23][25] = 'X';
+    grid[24][25] = 'X';
+
+    grid[10][25] = 'X';
+    grid[11][25] = 'X';
+    grid[12][25] = 'X';
+    grid[13][25] = 'X';
+    grid[14][25] = 'X';
 
     grid[24][11] = 'X';
     grid[25][11] = 'X';
@@ -79,13 +103,14 @@ const player = {
     jumping: false,
     readyToJump: true,
     maxSpeed: 3,
+    maxFallSpeed: 6,
     jump: 0,
-    maxJump: 15,
+    maxJump: 18,
     acc(dir) {
         switch (dir) {
             case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
             case 'left': if (this.vx > -this.maxSpeed) this.vx = (this.vx - 0.2).round(2); break;
-            case 'down': this.vy += 0.3; break;
+            case 'down': if (this.vy < this.maxFallSpeed) this.vy = (this.vy + 0.4).round(2); break;
         }
     },
 
@@ -96,13 +121,22 @@ const player = {
 
     draw() {
         ctx.fillStyle = "red";
-        ctx.fillRect(this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE), this.y, ELEMENT_SIZE, ELEMENT_SIZE);
+        ctx.fillRect(this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE), this.y - ((drawFromY + pixelOffsetY) * ELEMENT_SIZE), ELEMENT_SIZE, ELEMENT_SIZE);
     },
 
-    move() {
-        
-        this.gridX = Math.round((this.x / ELEMENT_SIZE));
-        this.gridY = Math.round((this.y / ELEMENT_SIZE));
+    checkForSolidGround() {
+        return this.vy >= 0 && grid[this.gridX][this.gridY + 1] != ' ';
+    },
+
+    checkForObstacleOverhead () {
+        return grid[this.gridX][this.gridY] != ' ';
+    },
+
+    hasLanded () {
+        return this.vy == 0 && this.readyToJump;
+    },
+
+    setDrawingOffset () {
         if (this.x > WIDTH / 2) {
             drawFromX = this.gridX - (WIDTH / ELEMENT_SIZE / 2);
             pixelOffsetX = this.x / ELEMENT_SIZE - Math.round((this.x / ELEMENT_SIZE));
@@ -116,25 +150,46 @@ const player = {
             pixelOffsetX = 0;
         }
     
+        if (this.y > HEIGHT / 2) {
+            drawFromY = this.gridY - (HEIGHT / ELEMENT_SIZE / 2);
+            pixelOffsetY = this.y / ELEMENT_SIZE - Math.round((this.y / ELEMENT_SIZE));
+        }
+        if (this.y < HEIGHT / 2) {
+            drawFromY = 0;
+            pixelOffsetY = 0;
+        }
+        if (this.y > GRID_HEIGHT * ELEMENT_SIZE - HEIGHT / 2) {
+            drawFromY = GRID_HEIGHT - (HEIGHT / ELEMENT_SIZE);
+            pixelOffsetY = 0;
+        }
+
+    },
+
+    move() {
         
+        this.gridX = Math.round((this.x / ELEMENT_SIZE));
+        this.gridY = Math.round((this.y / ELEMENT_SIZE));
+
+        this.setDrawingOffset();
+
         this.acc('down');
         this.jumping = (keysPressed[' '] && this.jump < this.maxJump && this.readyToJump);
         if (!keysPressed[' ']) this.readyToJump = false;
 
-        if (this.vy >= 0 && grid[this.gridX][this.gridY + 1] != ' ') {
+        if (this.checkForSolidGround()) {
             this.vy = 0;
             this.jump = 0;
             this.readyToJump = true;    
         }
 
-        if (grid[this.gridX][this.gridY] != ' ') {
+        if (this.checkForObstacleOverhead()) {
             this.jump = this.maxJump;
             this.jumping = false;
             this.vy = 0.5;
         }
 
         if (this.jumping) {
-            this.vy = -2.8;
+            this.vy = -3;
             this.jump++;
         }
 
@@ -143,9 +198,9 @@ const player = {
         else this.dec();
 
         this.x += this.vx;
-
         this.y += this.vy;
-        if (this.vy == 0 && this.readyToJump) this.y = this.gridY * ELEMENT_SIZE;
+        
+        if (this.hasLanded()) this.y = this.gridY * ELEMENT_SIZE;
         
     }
 }
@@ -156,8 +211,8 @@ function updateCanvas() {
     ctx.fillStyle = 'dimgray';
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
-        for (let y = 0; y < HEIGHT / ELEMENT_SIZE; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, y * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
+        for (let y = 0; y < GRID_HEIGHT + 1; y++) {
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE  );
         }
     }
     
