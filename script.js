@@ -7,6 +7,11 @@ const GRID_LENGTH = 100;
 const GRID_HEIGHT = 50;
 
 const grid = initGrid();
+
+for (let i = 0; i < 50; i++) {
+    generatePlatform();
+}
+
 let raf = window.requestAnimationFrame(updateCanvas);
 
 let drawFromX = 0;
@@ -20,8 +25,23 @@ const keysPressed = {
     ' ': false
 }
 
+function getRandom(max) {
+    return Math.floor(Math.random() * max);
+}
+
 Number.prototype.round = function (places) {
     return +(Math.round(this + "e+" + places) + "e-" + places);
+}
+
+function generatePlatform() {
+    const startY = getRandom(GRID_HEIGHT);
+    const startX = getRandom(GRID_LENGTH - 10);
+    const length = getRandom(9);
+
+    for (let i = startX; i < startX + length; i++) {
+        grid[i][startY] = 'X';
+    }
+
 }
 
 function initGrid() {
@@ -216,7 +236,6 @@ function updateCanvas() {
         }
     }
 
-    // ctx.fillRect(player.gridX * ELEMENT_SIZE, player.gridY * ELEMENT_SIZE, 10, 10);
     player.move();
     player.draw();
 
