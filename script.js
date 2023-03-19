@@ -125,7 +125,7 @@ const player = {
     maxSpeed: 2,
     maxFallSpeed: 6,
     jump: 0,
-    maxJump: 18,
+    maxJump: 20,
     acc(dir) {
         switch (dir) {
             case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
