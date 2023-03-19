@@ -35,8 +35,8 @@ Number.prototype.round = function (places) {
 
 function generatePlatform() {
     const startY = getRandom(GRID_HEIGHT);
-    const startX = getRandom(GRID_LENGTH - 10);
-    const length = getRandom(9);
+    const startX = getRandom(GRID_LENGTH - 20);
+    const length = getRandom(19);
 
     for (let i = startX; i < startX + length; i++) {
         grid[i][startY] = 'X';
@@ -122,7 +122,7 @@ const player = {
     vy: 0,
     jumping: false,
     readyToJump: true,
-    maxSpeed: 3,
+    maxSpeed: 2,
     maxFallSpeed: 6,
     jump: 0,
     maxJump: 18,
