@@ -117,6 +117,7 @@ const player = {
     maxFallSpeed: 6,
     jump: 0,
     maxJump: 18,
+    animationFrame: 0,
     acc(dir) {
         switch (dir) {
             case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
@@ -131,8 +132,22 @@ const player = {
     },
 
     draw() {
-        ctx.fillStyle = "red";
-        ctx.fillRect(this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE), this.y - ((drawFromY + pixelOffsetY) * ELEMENT_SIZE), ELEMENT_SIZE, ELEMENT_SIZE);
+        const x = this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE);
+        const y = this.y - ((drawFromY + pixelOffsetY) * ELEMENT_SIZE);
+        ctx.fillStyle = '#974';
+        ctx.fillRect(x + 2, y + 2, 6, 6);
+        ctx.fillStyle = '#474';
+        if (this.vx < 0) {
+            ctx.fillRect(x+2, y, 4, 4);
+        } else if (this.vx > 0) {
+            ctx.fillRect(x+4, y, 4, 4);
+        } else {
+            ctx.fillRect(x+3, y, 4, 4);
+        }
+
+
+        /*ctx.fillStyle = "red";
+        ctx.fillRect(this.x - ((drawFromX + pixelOffsetX) * ELEMENT_SIZE), this.y - ((drawFromY + pixelOffsetY) * ELEMENT_SIZE), ELEMENT_SIZE, ELEMENT_SIZE); */
     },
 
     checkForSolidGround() {
