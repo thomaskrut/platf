@@ -3,22 +3,26 @@ const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 const ELEMENT_SIZE = 10;
-const GRID_LENGTH = 100;
+const GRID_LENGTH = 200;
 const GRID_HEIGHT = 50;
 
 const grid = initGrid(GRID_LENGTH, GRID_HEIGHT);
 const background = initGrid(GRID_LENGTH, GRID_HEIGHT);
 const background2 = initGrid(GRID_LENGTH, GRID_HEIGHT);
 
-for (let i = 0; i < 50; i++) {
+let starField = initStarfield();
+
+console.log(starField);
+
+for (let i = 0; i < GRID_LENGTH; i++) {
     generatePlatform(grid);
 }
 
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < GRID_LENGTH / 2; i++) {
     generateBuilding(background, 10);
 }
 
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < GRID_LENGTH; i++) {
     generateBuilding(background2, 15);
 }
 
@@ -41,6 +45,26 @@ function getRandom(max) {
 
 Number.prototype.round = function (places) {
     return +(Math.round(this + "e+" + places) + "e-" + places);
+}
+
+function drawBuildingElement(x, y, colour) {
+    ctx.fillStyle = colour;
+    ctx.fillRect(x, y, ELEMENT_SIZE + 1, ELEMENT_SIZE);
+    ctx.fillStyle = '#000';
+    
+    ctx.fillRect(x + 3, y + 2, 1, 1);
+    ctx.fillRect(x + 7, y + 2, 1, 1);
+    ctx.fillRect(x + 3, y + 6, 1, 1);
+    ctx.fillRect(x + 7, y + 6, 1, 1);
+}
+
+function initStarfield() {
+    let array = [];
+    for (let i = 0; i < HEIGHT / 2; i++) {
+        array.push({ x: getRandom(WIDTH), y: getRandom(HEIGHT) });
+    }
+    
+    return array;
 }
 
 function generatePlatform(targetArray) {
@@ -101,8 +125,8 @@ const player = {
     },
 
     dec() {
-        if (this.vx > 0) this.vx = (this.vx - 0.4).round(2);
-        else if (this.vx < 0) this.vx = (this.vx + 0.4).round(2);
+        if (this.vx > 0) this.vx = (this.vx - 0.2).round(2);
+        else if (this.vx < 0) this.vx = (this.vx + 0.2).round(2);
     },
 
     draw() {
@@ -116,6 +140,14 @@ const player = {
 
     checkForObstacleOverhead() {
         return grid[this.gridX][this.gridY] != ' ';
+    },
+
+    checkForObstacle() {
+        if (this.vx > 0) {
+            return grid[this.gridX + 1][this.gridY] != ' ';
+        } else if (this.vx < 0) {
+            return grid[this.gridX - 1][this.gridY] != ' ';
+        }
     },
 
     hasLanded() {
@@ -180,6 +212,8 @@ const player = {
         else if (keysPressed.ArrowRight) this.acc('right')
         else this.dec();
 
+        if (this.checkForObstacle()) this.vx = 0;
+
         this.x += this.vx;
         this.y += this.vy;
 
@@ -191,21 +225,40 @@ const player = {
 function updateCanvas() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
-    ctx.fillStyle = '#222';
+
+    ctx.fillStyle = '#555';
+  
+
+    for (i of starField) {
+      
+        ctx.fillRect(i.x, i.y, 1, 1);
+    }
+
+    ctx.beginPath();
+      ctx.arc(30, 30, 18, 0, 2 * Math.PI, false);
+      ctx.fillStyle = '#876';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(28, 28, 15, 0, 2 * Math.PI, false);
+      ctx.fillStyle = '#987';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(26, 26, 11, 0, 2 * Math.PI, false);
+      ctx.fillStyle = '#a98';
+      ctx.fill();
+    
 
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background2[x][y] != ' ') ctx.fillRect((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, ELEMENT_SIZE + 3, ELEMENT_SIZE + 3);
+            if (background2[x][y] != ' ') drawBuildingElement((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, '#222')
         }
     }
 
-    ctx.fillStyle = '#444';
-
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background[x][y] != ' ') ctx.fillRect((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
+            if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, '#444')
         }
     }
 
