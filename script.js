@@ -49,7 +49,7 @@ Number.prototype.round = function (places) {
 
 function drawBuildingElement(x, y, colour, elementId) {
     ctx.fillStyle = colour;
-    ctx.fillRect(x, y, ELEMENT_SIZE + 1, ELEMENT_SIZE);
+    ctx.fillRect(x, y, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
     ctx.fillStyle = '#000';
     
     ctx.fillRect(x + 3, y + 2, 1, 1);
@@ -264,18 +264,21 @@ function updateCanvas() {
       ctx.fillStyle = '#a98';
       ctx.fill();
     
-
+    
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background2[x][y] != ' ') drawBuildingElement((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, '#222', x * y)
+            if (background2[x][y] != ' ') {
+                drawBuildingElement((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - (drawFromY / 4) - (pixelOffsetY / 4)) * ELEMENT_SIZE - 270, '#222', x * y);
+            
         }
     }
+}
 
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, '#444', x * y)
+            if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - (drawFromY / 3) - (pixelOffsetY / 3)) * ELEMENT_SIZE - 240, '#444', x * y)
         }
     }
 

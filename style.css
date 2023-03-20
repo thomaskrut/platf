@@ -4,7 +4,7 @@ body {
 
 #canvas {
     width: 680px;
-    height: 440px;
-    image-rendering:auto;
+    height: 420px;
+    image-rendering:crisp-edges
    
 }
