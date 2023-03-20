@@ -155,10 +155,12 @@ const player = {
     },
 
     checkForObstacleOverhead() {
-        return grid[this.gridX][this.gridY] != ' ';
+        return false;
+        //return grid[this.gridX][this.gridY] != ' ';
     },
 
     checkForObstacle() {
+        return false;
         if (this.vx > 0) {
             return grid[this.gridX + 1][this.gridY] != ' ';
         } else if (this.vx < 0) {
@@ -265,7 +267,7 @@ function updateCanvas() {
       ctx.fill();
     
     
-    for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
+    for (let x = Math.floor((drawFromX / 4)); x < Math.floor((drawFromX / 4) + (WIDTH / ELEMENT_SIZE) + 1); x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
             if (background2[x][y] != ' ') {
@@ -275,7 +277,7 @@ function updateCanvas() {
     }
 }
 
-    for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
+    for (let x = Math.floor((drawFromX / 3)); x < Math.floor((drawFromX / 3) + (WIDTH / ELEMENT_SIZE) + 1); x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
             if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - (drawFromY / 3) - (pixelOffsetY / 3)) * ELEMENT_SIZE - 240, '#444', x * y)
@@ -287,7 +289,7 @@ function updateCanvas() {
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, 2);
         }
     }
 
