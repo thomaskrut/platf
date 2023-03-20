@@ -47,15 +47,16 @@ Number.prototype.round = function (places) {
     return +(Math.round(this + "e+" + places) + "e-" + places);
 }
 
-function drawBuildingElement(x, y, colour) {
+function drawBuildingElement(x, y, colour, elementId) {
     ctx.fillStyle = colour;
     ctx.fillRect(x, y, ELEMENT_SIZE + 1, ELEMENT_SIZE);
     ctx.fillStyle = '#000';
     
     ctx.fillRect(x + 3, y + 2, 1, 1);
-    ctx.fillRect(x + 7, y + 2, 1, 1);
-    ctx.fillRect(x + 3, y + 6, 1, 1);
-    ctx.fillRect(x + 7, y + 6, 1, 1);
+    ctx.fillRect(x + 8, y + 2, 1, 1);
+    ctx.fillRect(x + 3, y + 7, 1, 1);
+    if (elementId % 12 == 2) ctx.fillStyle = '#cc0';
+    ctx.fillRect(x + 8, y + 7, 1, 1);
 }
 
 function initStarfield() {
@@ -212,18 +213,19 @@ const player = {
         else if (keysPressed.ArrowRight) this.acc('right')
         else this.dec();
 
+        
         if (this.checkForObstacle()) this.vx = 0;
-
         this.x += this.vx;
         this.y += this.vy;
-
+        
         if (this.hasLanded()) this.y = this.gridY * ELEMENT_SIZE;
+        
 
     }
 }
 
 function updateCanvas() {
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = '#201'
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     ctx.fillStyle = '#555';
@@ -251,14 +253,14 @@ function updateCanvas() {
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background2[x][y] != ' ') drawBuildingElement((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, '#222')
+            if (background2[x][y] != ' ') drawBuildingElement((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, '#222', x * y)
         }
     }
 
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, '#444')
+            if (background[x][y] != ' ') drawBuildingElement((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, '#444', x * y)
         }
     }
 
