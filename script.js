@@ -8,13 +8,18 @@ const GRID_HEIGHT = 50;
 
 const grid = initGrid(GRID_LENGTH, GRID_HEIGHT);
 const background = initGrid(GRID_LENGTH, GRID_HEIGHT);
+const background2 = initGrid(GRID_LENGTH, GRID_HEIGHT);
 
 for (let i = 0; i < 50; i++) {
     generatePlatform(grid);
 }
 
 for (let i = 0; i < 50; i++) {
-    generateBuilding(background);
+    generateBuilding(background, 10);
+}
+
+for (let i = 0; i < 50; i++) {
+    generateBuilding(background2, 15);
 }
 
 let raf = window.requestAnimationFrame(updateCanvas);
@@ -49,11 +54,11 @@ function generatePlatform(targetArray) {
 
 }
 
-function generateBuilding(targetArray) {
+function generateBuilding(targetArray, maxHeight) {
     const startY = GRID_HEIGHT;
     const startX = getRandom(GRID_LENGTH - 11);
     const width = getRandom(6);
-    const height = getRandom(10);
+    const height = getRandom(maxHeight);
 
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
@@ -186,16 +191,25 @@ const player = {
 function updateCanvas() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
-    ctx.fillStyle = 'dimgray';
+    ctx.fillStyle = '#222';
 
     for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (background[x][y] != ' ') ctx.fillRect((x - (drawFromX / 2) - (pixelOffsetX / 2)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
+            if (background2[x][y] != ' ') ctx.fillRect((x - (drawFromX / 4) - (pixelOffsetX / 4)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE - 3, ELEMENT_SIZE + 3, ELEMENT_SIZE + 3);
         }
     }
 
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = '#444';
+
+    for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
+
+        for (let y = 0; y < GRID_HEIGHT + 1; y++) {
+            if (background[x][y] != ' ') ctx.fillRect((x - (drawFromX / 3) - (pixelOffsetX / 3)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE + 5, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
+        }
+    }
+
+    ctx.fillStyle = '#888';    
 
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
@@ -219,7 +233,6 @@ window.addEventListener('keydown', (e) => {
             case 'ArrowRight': {
                 keysPressed[e.key] = true;
                 e.preventDefault();
-                console.log(keysPressed);
                 break;
             }
 
@@ -238,7 +251,6 @@ window.addEventListener('keyup', (e) => {
         case 'ArrowRight': {
             keysPressed[e.key] = false;
             e.preventDefault();
-            console.log(keysPressed);
             break;
         }
 
