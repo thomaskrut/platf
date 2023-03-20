@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 const ELEMENT_SIZE = 10;
-const GRID_LENGTH = 200;
+const GRID_LENGTH = 400;
 const GRID_HEIGHT = 50;
 
 const grid = initGrid(GRID_LENGTH, GRID_HEIGHT);
@@ -11,8 +11,6 @@ const background = initGrid(GRID_LENGTH, GRID_HEIGHT);
 const background2 = initGrid(GRID_LENGTH, GRID_HEIGHT);
 
 let starField = initStarfield();
-
-console.log(starField);
 
 for (let i = 0; i < GRID_LENGTH; i++) {
     generatePlatform(grid);
