@@ -6,10 +6,15 @@ const ELEMENT_SIZE = 10;
 const GRID_LENGTH = 100;
 const GRID_HEIGHT = 50;
 
-const grid = initGrid();
+const grid = initGrid(GRID_LENGTH, GRID_HEIGHT);
+const background = initGrid(GRID_LENGTH, GRID_HEIGHT);
 
 for (let i = 0; i < 50; i++) {
-    generatePlatform();
+    generatePlatform(grid);
+}
+
+for (let i = 0; i < 50; i++) {
+    generateBuilding(background);
 }
 
 let raf = window.requestAnimationFrame(updateCanvas);
@@ -33,89 +38,45 @@ Number.prototype.round = function (places) {
     return +(Math.round(this + "e+" + places) + "e-" + places);
 }
 
-function generatePlatform() {
+function generatePlatform(targetArray) {
     const startY = getRandom(GRID_HEIGHT);
     const startX = getRandom(GRID_LENGTH - 20);
     const length = getRandom(19);
 
     for (let i = startX; i < startX + length; i++) {
-        grid[i][startY] = 'X';
+        targetArray[i][startY] = 'X';
     }
 
 }
 
-function initGrid() {
-    const grid = [];
-    for (let x = -2; x < GRID_LENGTH + 1; x++) {
-        grid[x] = [];
-        for (let y = 0; y < GRID_HEIGHT; y++) {
-            grid[x][y] = ' ';
+function generateBuilding(targetArray) {
+    const startY = GRID_HEIGHT;
+    const startX = getRandom(GRID_LENGTH - 11);
+    const width = getRandom(6);
+    const height = getRandom(10);
+
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            targetArray[startX + x][startY - y] = 'B';
         }
     }
 
-    grid[14][11] = 'X';
-    grid[15][11] = 'X';
-    grid[16][11] = 'X';
-    grid[17][11] = 'X';
-    grid[18][11] = 'X';
-    grid[4][7] = 'X';
-    grid[5][7] = 'X';
-    grid[6][7] = 'X';
-    grid[7][7] = 'X';
-    grid[8][7] = 'X';
+}
 
-    grid[10][14] = 'X';
-
-    grid[10][20] = 'X';
-    grid[11][20] = 'X';
-    grid[12][20] = 'X';
-    grid[13][20] = 'X';
-    grid[14][20] = 'X';
-
-
-    grid[20][25] = 'X';
-    grid[21][25] = 'X';
-    grid[22][25] = 'X';
-    grid[23][25] = 'X';
-    grid[24][25] = 'X';
-
-    grid[10][25] = 'X';
-    grid[11][25] = 'X';
-    grid[12][25] = 'X';
-    grid[13][25] = 'X';
-    grid[14][25] = 'X';
-
-    grid[24][11] = 'X';
-    grid[25][11] = 'X';
-    grid[26][11] = 'X';
-    grid[27][11] = 'X';
-    grid[28][11] = 'X';
-    grid[29][11] = 'X';
-    grid[30][11] = 'X';
-    grid[31][13] = 'X';
-    grid[32][13] = 'X';
-    grid[34][13] = 'X';
-    grid[35][13] = 'X';
-    grid[36][13] = 'X';
-
-
-    grid[61][13] = 'X';
-    grid[62][13] = 'X';
-    grid[64][13] = 'X';
-    grid[65][13] = 'X';
-    grid[66][13] = 'X';
-    grid[95][13] = 'X';
-    grid[96][13] = 'X';
-    grid[97][13] = 'X';
-    grid[98][13] = 'X';
-    grid[99][13] = 'X';
-
+function initGrid(width, height) {
+    const grid = [];
+    for (let x = -2; x < width + 1; x++) {
+        grid[x] = [];
+        for (let y = 0; y < height; y++) {
+            grid[x][y] = ' ';
+        }
+    }
     return grid;
 }
 
 const player = {
     x: 160,
-    y: 10,
+    y: (GRID_HEIGHT - 5 )* ELEMENT_SIZE,
     gridX: 0,
     gridY: 0,
     vx: 0,
@@ -125,7 +86,7 @@ const player = {
     maxSpeed: 2,
     maxFallSpeed: 6,
     jump: 0,
-    maxJump: 20,
+    maxJump: 18,
     acc(dir) {
         switch (dir) {
             case 'right': if (this.vx < this.maxSpeed) this.vx = (this.vx + 0.2).round(2); break;
@@ -227,12 +188,19 @@ function updateCanvas() {
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     ctx.fillStyle = 'dimgray';
 
+    for (let x = 0; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
+        for (let y = 0; y < GRID_HEIGHT + 1; y++) {
+            if (background[x][y] != ' ') ctx.fillRect((x - (drawFromX / 2) - (pixelOffsetX / 2)) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
+        }
+    }
+
+    ctx.fillStyle = 'white';
 
     for (let x = drawFromX - 1; x < drawFromX + (WIDTH / ELEMENT_SIZE) + 1; x++) {
 
         for (let y = 0; y < GRID_HEIGHT + 1; y++) {
-            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE);
+            if (grid[x][y] != ' ') ctx.fillRect((x - drawFromX - pixelOffsetX) * ELEMENT_SIZE, (y - drawFromY - pixelOffsetY) * ELEMENT_SIZE, ELEMENT_SIZE + 1, ELEMENT_SIZE + 1);
         }
     }
 
